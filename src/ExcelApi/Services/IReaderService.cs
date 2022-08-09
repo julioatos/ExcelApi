@@ -5,6 +5,6 @@ namespace ExcelApi.Services
 {
     public interface IReaderService
     {
-        public List<string> Readfile(IFormFile file);
+        public void Readfile(IFormFile file);
     }
 }
