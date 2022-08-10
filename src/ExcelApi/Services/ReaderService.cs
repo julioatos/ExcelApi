@@ -18,7 +18,7 @@ namespace ExcelApi.Services
                     file.CopyTo(stream);
                     stream.Position = 5;
                     System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                    var lista=stream.LeerPrimerColumna();
+                    var lista = stream.LeerPrimerColumna();
                     var listan = stream.LeerPagoProveedores(lista.Count);
                 }
             }
