@@ -7,7 +7,7 @@ namespace ExcelApi.Services
     {
         public static bool ValidateSociety(this List<string> list)
         {
-            bool sonIguales = list.Distinct().Count()>0;
+            bool sonIguales = list.Distinct().Any();
             return sonIguales;
         }
 

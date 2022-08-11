@@ -30,13 +30,17 @@ namespace ExcelApi.Controllers
         [HttpPost]
         public ActionResult ReadFile(IFormFile file)
         {
+            bool valido;
             if (file == null || file.Length == 0)
             {
                 return Content("No se envio un archivo");
             }
             else
-                _readerService.Readfile(file);
-            return Ok();
+                valido=_readerService.Readfile(file);
+            if (!valido)
+                return BadRequest("El archivo no cumplio con las carcaterisitcas");
+            else
+                return Ok();
         }
     }
 }

@@ -9,9 +9,12 @@ namespace ExcelApi.Services
 {
     public class ReaderService : IReaderService
     {
-        public void Readfile(IFormFile file)
+        public bool Readfile(IFormFile file)
         {
+            bool esValido;
             string fileExtension = Path.GetExtension(file.FileName);
+            bool validadSociedad=false, validaNumeros=false;
+
             if (fileExtension == ".xlsx" || fileExtension == ".XLSX")
             {
                 DataSet dsexcelRecords = new DataSet();
@@ -25,13 +28,14 @@ namespace ExcelApi.Services
                         dsexcelRecords = reader.AsDataSet();
                     }
                 }
-                var listaSociedad=dsexcelRecords.LeerPrimerColumna();
-                bool validadSociedad, validaNumeros;
+                var listaSociedad = dsexcelRecords.LeerPrimerColumna();
                 validadSociedad = listaSociedad.ValidateSociety();
-                validaNumeros=dsexcelRecords.LeerNumeros(listaSociedad.Count);
+                validaNumeros = dsexcelRecords.LeerNumeros(listaSociedad.Count);
                 //var lista = stream.LeerPrimerColumna();
                 //var listan = stream.LeerPagoProveedores(lista.Count);
             }
+            esValido = (validadSociedad == validaNumeros == true);
+            return esValido;
         }
     }
 }
