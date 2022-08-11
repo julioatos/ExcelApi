@@ -1,65 +1,47 @@
 ﻿using ExcelDataReader;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 
 namespace ExcelApi.Services
 {
     public static class Readers
     {
-        public static List<string> LeerPrimerColumna(this MemoryStream stream)
+        public static List<string> LeerPrimerColumna(this DataSet dataset)
         {
             List<string> resultData = new List<string>();
-            var reader = ExcelReaderFactory.CreateReader(stream);
-            bool bandera = true;
-            int contador = 0;
-            do
-            {
-                while (reader.Read())
-                {
-                    if (contador > 4 && bandera == true)
-                    {
-                        var texto = reader.GetValue(0).ToString().Substring(0, 5);
-                        if (reader.GetValue(0).ToString().Substring(0, 5).Equals("Total"))
-                        {
-                            bandera = false;
-                        }
-                        else
-                        {
-                            resultData.Add(reader.GetValue(1).ToString());
-                        }
-                    }
-                    contador++;
-                }
-            } while (reader.NextResult());
-            resultData.ValidateSociety();
+            resultData = dataset.
+                Tables[0].
+                AsEnumerable().
+                Select(r => r.Field<string>("Column0")).
+                Where(r => r != null && !r.StartsWith("Total")).
+                Skip(4).ToList();
             return resultData;
         }
 
-        public static List<string> LeerPagoProveedores(this MemoryStream stream, int count)
+        public static bool LeerNumeros(this DataSet dataset, int count)
         {
-            count++;
-            List<string> resultData = new List<string>();
-            using (var reader = ExcelReaderFactory.CreateReader(stream))
+            List<double> resultData = new List<double>();
+            int[] columnas = new int[] { 10,11,12,13,14,15,20,21,22 };
+           //                            0   1   2  
+            for (int i = 5; i < count + 5; i++)
             {
-                int fila = 0;
-                do
+                try
                 {
-                    while (reader.Read() && count != 0)
+                    for (int j = 0; j < columnas.Length; j++)
                     {
-                        if (fila > 4)
-                        {
-                            //for (int i = 10; i <= 15; i++)
-                            //{
-                            resultData.Add(reader.GetValue(10).ToString());
-                            //}
-                        }
-                        fila++;
-                        count--;
+                        
+                        resultData.Add(double.Parse(dataset.Tables[0].Rows[i][columnas[j]].ToString()));
                     }
-                } while (reader.NextResult());
-                resultData.ValidateSociety();
-                return resultData;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
+            return resultData.ValidateNumbers(count);
         }
     }
 }
