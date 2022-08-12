@@ -13,22 +13,15 @@ namespace ExcelApi.Controllers
     [ApiController]
     public class ExcelController : ControllerBase
     {
-        private readonly IReaderService _readerService;
+        private readonly IResponseExcelService _readerService;
 
-        public ExcelController(IReaderService readerService)
+        public ExcelController(IResponseExcelService readerService)
         {
             _readerService = readerService;
         }
 
-        [HttpGet]
-        public ActionResult HelloWorld()
-        {
-            return Ok("Hola Mundo");
-        }
-
-        //resolver async
         [HttpPost]
-        public ActionResult ReadFile(IFormFile file)
+        public async Task<IActionResult> AnalizeFile(IFormFile file)
         {
             bool valido;
             if (file == null || file.Length == 0)
@@ -36,11 +29,11 @@ namespace ExcelApi.Controllers
                 return Content("No se envio un archivo");
             }
             else
-                valido=_readerService.Readfile(file);
+                valido=_readerService.ResponseExcelfile(file).Item1;
             if (!valido)
-                return BadRequest("El archivo no cumplio con las carcaterisitcas");
+                return BadRequest($"El archivo no cumplio con las carcaterisitcas\n{_readerService.ResponseExcelfile(file).Item2}");
             else
-                return Ok();
+                return Ok("La hoja de calculo cumple con los requerimientos");
         }
     }
 }

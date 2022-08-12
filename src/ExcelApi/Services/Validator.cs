@@ -7,13 +7,17 @@ namespace ExcelApi.Services
     {
         public static bool ValidateSociety(this List<string> list)
         {
-            bool sonIguales = list.Distinct().Any();
-            return sonIguales;
+            bool sonDistintos = (list.Distinct().ToList().Count>1);
+            if (sonDistintos)
+            {
+                return false;
+            }
+            else
+                return true;
         }
 
-        public static bool ValidateNumbers(this List<double> list, int count)
-        {
-            bool sonNumeros = (list.Count == (count*9));
+        public static bool ValidateNumbers(this List<double> list, int count,int columnas){
+            bool sonNumeros = (list.Count == count*columnas);
             return sonNumeros;
         }
     }

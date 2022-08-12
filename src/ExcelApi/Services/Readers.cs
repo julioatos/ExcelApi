@@ -11,7 +11,7 @@ namespace ExcelApi.Services
     {
         public static List<string> LeerPrimerColumna(this DataSet dataset)
         {
-            List<string> resultData = new List<string>();
+            List<string> resultData = new ();
             resultData = dataset.
                 Tables[0].
                 AsEnumerable().
@@ -23,16 +23,16 @@ namespace ExcelApi.Services
 
         public static bool LeerNumeros(this DataSet dataset, int count)
         {
-            List<double> resultData = new List<double>();
+            List<double> resultData = new();
             int[] columnas = new int[] { 10,11,12,13,14,15,20,21,22 };
-           //                            0   1   2  
+
             for (int i = 5; i < count + 5; i++)
             {
                 try
                 {
                     for (int j = 0; j < columnas.Length; j++)
                     {
-                        
+                        //columna = Convert.ToChar(columnas[i]+60);
                         resultData.Add(double.Parse(dataset.Tables[0].Rows[i][columnas[j]].ToString()));
                     }
                 }
@@ -41,7 +41,7 @@ namespace ExcelApi.Services
                     Console.WriteLine(e.Message);
                 }
             }
-            return resultData.ValidateNumbers(count);
+            return resultData.ValidateNumbers(count,columnas.Length);
         }
     }
 }
